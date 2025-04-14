@@ -1,0 +1,341 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lethal – Card Drag with Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root {
+      --bg: #0e0e0e;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --highlight: #5eead4;
+      --text: #f0f0f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 { margin-bottom: 2rem; color: var(--highlight); }
+
+    .play-area {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      border: 2px dashed #444;
+      min-height: 200px;
+      width: 100%;
+      max-width: 600px;
+      padding: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .card, .drop-preview {
+      width: 120px;
+      height: 180px;
+      border-radius: 1rem;
+      padding: 1rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 2px solid var(--card-border);
+      cursor: grab;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .drop-preview {
+      border: 2px dashed var(--highlight);
+      background-color: rgba(94, 234, 212, 0.05);
+    }
+
+    .card img {
+      width: 48px;
+      height: 48px;
+      pointer-events: none;
+    }
+
+    .card-title {
+      color: var(--highlight);
+      font-weight: bold;
+    }
+
+    .hand {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+    }
+  
+    .card-desc {
+      font-size: 0.75rem;
+      color: #aaa;
+      margin-top: 0.25rem;
+      text-align: center;
+    }
+
+    .submit-area {
+      margin-top: 1rem;
+    }
+
+    .submit-btn {
+      background-color: var(--highlight);
+      color: black;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+  .drop-preview {
+    border: 2px dashed rgba(255, 255, 255, 0.25);
+    background-color: rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+  }
+
+  .submit-area {
+    margin-top: 3rem;
+    text-align: center;
+  }
+
+  .submit-btn {
+    background-color: var(--highlight);
+    color: black;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .submit-btn:hover {
+    transform: scale(1.05);
+    background-color: #aaf8ee;
+  }
+
+  .card {
+    transition: transform 0.15s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+  }
+</style>
+</head>
+<body><div style="font-size: 2rem; font-weight: bold; color: var(--highlight); margin-bottom: 2rem; text-align: center;">Lethal – Daily Card Battler</div>
+
+<div class="enemy" style="text-align: center; margin-bottom: 2rem;">
+<img alt="Goblin King" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f479.png" style="width: 100px; height: auto;"/>
+<h2 style="color: var(--highlight); margin: 0.5rem 0;">👑 Goblin King</h2>
+<p><strong>HP:</strong> 25</p>
+<p><strong>Intent:</strong> 🛡️ Gain Block + 🗡️ Strike</p>
+<div style="margin: 1rem auto; max-width: 200px;"><div style="color: white; font-size: 0.9rem; text-align: center; margin-bottom: 0.25rem;">HP: 25 / 25</div><div style="background: #222; border-radius: 8px; height: 20px; overflow: hidden;"><div style="background: #ef4444; height: 100%; width: 100%; transition: width 0.3s ease;"></div></div></div></div>
+
+<div style="color: var(--highlight); font-weight: bold; margin-bottom: 0.5rem; text-align: center;">Play Order</div><div class="play-area" id="playArea">
+<div class="drop-preview" id="previewMarker" style="display: none;"></div>
+</div><div class="submit-area" style="margin-top: 4rem; text-align: center;"><button class="submit-btn">Submit Turn</button></div>
+<div class="hand" id="hand">
+<div class="card" id="card1">
+<img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/2694.png"/>
+<div class="card-title">Strike</div>
+<div class="card-desc">Deal 6 damage to the enemy.</div></div>
+<div class="card" id="card2">
+<img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f525.png"/>
+<div class="card-title">Fireball</div>
+<div class="card-desc">Deal 10 fire damage and apply Burn.</div></div>
+<div class="card" id="card3">
+<img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f528.png"/>
+<div class="card-title">Bash</div>
+<div class="card-desc">Deal 8 damage and apply Vulnerable.</div></div>
+</div>
+<script>
+let draggedCard = null;
+let dragOrigin = null;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+
+function initCardEvents(card) {
+  card.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    draggedCard = card;
+    dragOrigin = card.parentNode.id;
+
+    const rect = card.getBoundingClientRect();
+    dragOffsetX = e.clientX - rect.left;
+    dragOffsetY = e.clientY - rect.top;
+
+    // Stay in DOM, just move visually
+    card.style.position = 'absolute';
+    card.style.zIndex = '1000';
+    card.style.pointerEvents = 'none';
+    card.style.left = rect.left + 'px';
+    card.style.top = rect.top + 'px';
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
+}
+
+document.querySelectorAll('.card').forEach(initCardEvents);
+
+function onMouseMove(e) {
+  if (!draggedCard) return;
+  draggedCard.style.left = (e.clientX - dragOffsetX) + 'px';
+  draggedCard.style.top = (e.clientY - dragOffsetY) + 'px';
+
+  const playArea = document.getElementById('playArea');
+  const preview = document.getElementById('previewMarker');
+  const rect = playArea.getBoundingClientRect();
+  const inside = (
+    e.clientX > rect.left && e.clientX < rect.right &&
+    e.clientY > rect.top && e.clientY < rect.bottom
+  );
+
+  if (inside) {
+    preview.style.display = 'block';
+    const dropTargetIndex = getDropIndex(playArea, e.clientX);
+    const previewSiblings = [...playArea.children].filter(el => el.id !== 'previewMarker');
+    if (dropTargetIndex >= previewSiblings.length) {
+      playArea.appendChild(preview);
+    } else {
+      playArea.insertBefore(preview, previewSiblings[dropTargetIndex]);
+    }
+  } else {
+    preview.style.display = 'none';
+  }
+}
+
+function onMouseUp(e) {
+  const preview = document.getElementById('previewMarker');
+  preview.style.display = 'none';
+  if (!draggedCard) return;
+
+  const playArea = document.getElementById('playArea');
+  const hand = document.getElementById('hand');
+
+  const playRect = playArea.getBoundingClientRect();
+  const handRect = hand.getBoundingClientRect();
+
+  const inPlayArea = (
+    e.clientX > playRect.left && e.clientX < playRect.right &&
+    e.clientY > playRect.top && e.clientY < playRect.bottom
+  );
+
+  const inHand = (
+    e.clientX > handRect.left && e.clientX < handRect.right &&
+    e.clientY > handRect.top && e.clientY < handRect.bottom
+  );
+
+  // Always reset dragged card styles
+  draggedCard.style.position = '';
+  draggedCard.style.zIndex = '';
+  draggedCard.style.left = '';
+  draggedCard.style.top = '';
+  draggedCard.style.pointerEvents = '';
+  draggedCard.style.position = '';
+  draggedCard.style.zIndex = '';
+  draggedCard.style.left = '';
+  draggedCard.style.top = '';
+  draggedCard.style.pointerEvents = '';
+
+  if (inPlayArea) {
+    const siblings = [...playArea.children].filter(el => el.id !== 'previewMarker');
+    const dropTargetIndex = getDropIndex(playArea, e.clientX);
+    if (!siblings.includes(draggedCard)) {
+      if (dropTargetIndex >= siblings.length) {
+        playArea.appendChild(draggedCard);
+      } else {
+        playArea.insertBefore(draggedCard, siblings[dropTargetIndex]);
+      }
+    }
+  } else if (inHand) {
+    if (draggedCard.parentNode !== hand) {
+      hand.appendChild(draggedCard);
+    }
+  } else {
+    if (dragOrigin === 'hand') {
+      hand.appendChild(draggedCard);
+    } else {
+      playArea.appendChild(draggedCard);
+    }
+  }
+
+  initCardEvents(draggedCard);
+  draggedCard = null;
+  dragOrigin = null;
+  document.removeEventListener('mousemove', onMouseMove);
+  document.removeEventListener('mouseup', onMouseUp);
+}
+
+function getDropIndex(container, x) {
+  const cards = [...container.querySelectorAll('.card')];
+  for (let i = 0; i < cards.length; i++) {
+    const rect = cards[i].getBoundingClientRect();
+    if (x < rect.left + rect.width / 2) {
+      return i;
+    }
+  }
+  return cards.length;
+}
+
+document.querySelector(".submit-btn").addEventListener("click", () => {
+  const playArea = document.getElementById("playArea");
+  const cards = Array.from(playArea.querySelectorAll(".card-title"));
+  const hpFill = document.querySelector(".enemy div div:nth-child(2) div");
+  const hpLabel = document.querySelector(".enemy div div:nth-child(1)");
+  let currentHP = parseInt(hpLabel.textContent.split("/")[0].replace("HP:", "").trim());
+
+  const getDamage = (name) => {
+    if (name === "strike") return 6;
+    if (name === "fireball") return 10;
+    if (name === "bash") return 8;
+    return 0;
+  };
+
+  let i = 0;
+  function playCardSequentially() {
+    if (i >= cards.length) return;
+
+    const cardName = cards[i].textContent.trim().toLowerCase();
+    const damage = getDamage(cardName);
+    currentHP = Math.max(0, currentHP - damage);
+    const percent = (currentHP / 25) * 100;
+
+    hpFill.style.width = percent + "%";
+    hpLabel.textContent = `HP: ${currentHP} / 25`;
+    hpFill.style.background = "#f87171";
+
+    setTimeout(() => {
+      hpFill.style.background = "#ef4444";
+      i++;
+      setTimeout(playCardSequentially, 600);
+    }, 250);
+  }
+
+  playCardSequentially();
+});
+</script></body>
+</html>
