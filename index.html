@@ -24,611 +24,674 @@
       min-height: 100vh;
     }
     h1 { margin-bottom: 2rem; color: var(--highlight); }
-    /* Enemy Section */
     .enemy { text-align: center; margin-bottom: 2rem; position: relative; }
     .enemy img { width: 100px; }
     .hp-label { color: white; font-size: 0.9rem; text-align: center; margin-bottom: 0.25rem; }
-    .hp-fill {
-      background: #ef4444; height: 100%; width: 100%; transition: width 0.3s ease;
-    }
-    /* Play Area */
+    .hp-fill { background: #ef4444; height: 100%; width: 100%; transition: width 0.3s ease; }
     .play-area {
       display: flex; flex-wrap: wrap; gap: 1rem;
       border: 2px dashed #444; min-height: 300px;
       width: 100%; max-width: 600px; padding: 1rem; margin-bottom: 2rem;
     }
-    /* Hand (Cards container) */
-    .hand { display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; }
-    /* Card and Drop Preview – Compact State */
+    .hand {
+  flex-wrap: wrap; display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; }
     .card, .drop-preview {
       width: 70px; height: 110px; border-radius: 0.75rem; padding: 0.5rem;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       gap: 0.35rem; transition: background 0.2s ease; overflow: hidden;
       position: relative; background: var(--card-bg); box-sizing: border-box;
-      touch-action: none; /* Prevent default scrolling on mobile */
+      touch-action: none;
     }
-    .card {
-      border: 2px solid var(--card-border); cursor: grab;
-      box-shadow: 0 0 10px rgba(0,0,0,0.4);
-    }
-    .drop-preview {
-      border: 2px dashed rgba(255,255,255,0.25);
-      background-color: rgba(255,255,255,0.05);
-    }
-    .card img {
-      width: 32px; height: 32px; pointer-events: none; display: block; margin: 0 auto;
-    }
-    .card-title {
-      font-size: 0.8rem; color: var(--highlight);
-      text-align: center; white-space: nowrap;
-      overflow: hidden; text-overflow: ellipsis;
-    }
+    .card { border: 2px solid var(--card-border); cursor: grab; box-shadow: 0 0 10px rgba(0,0,0,0.4); }
+    .drop-preview { border: 2px dashed rgba(255,255,255,0.25); background-color: rgba(255,255,255,0.05); }
+    .card img { width: 32px; height: 32px; pointer-events: none; margin: 0 auto; }
+    .card-title { font-size: 0.8rem; color: var(--highlight); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .card-desc { display: none; font-size: 0.75rem; color: #aaa; text-align: center; }
-    .card.active {
-      outline: 3px solid var(--highlight);
-      box-shadow: 0 0 12px var(--highlight);
-    }
-    /* Card Overlay for Expanded View (Preview) */
+    .card.active { outline: 3px solid var(--highlight); box-shadow: 0 0 12px var(--highlight); }
     #cardOverlay {
-      display: none; /* Initially hidden */
-      position: fixed;
-      background: var(--card-bg-expanded);
-      border: 2px solid var(--card-border);
-      border-radius: 0.75rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-      z-index: 15000;
-      overflow: hidden;
+      display: none; position: fixed; background: var(--card-bg-expanded);
+      border: 2px solid var(--card-border); border-radius: 0.75rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6); z-index: 15000; overflow: hidden;
     }
     @media (min-width: 600px) {
       #cardOverlay { width: 200px; height: 300px; padding: 1rem; }
     }
-    @media (max-width: 600px) {
-      #cardOverlay {
-        width: 100vw; height: 100vh; padding: 0.5rem;
-        left: 0; top: 0;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        text-align: center;
-      }
-    }
+    
+@media (max-width: 600px) {
+  .hand {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    width: 100%;
+  }
+
+  .card {
+    width: 58px;
+    height: 92px;
+    font-size: 0.7rem;
+  }
+
+  .card img {
+    width: 22px;
+    height: 22px;
+  }
+
+  .card-title {
+    font-size: 0.65rem;
+  }
+
+  .card-desc {
+    display: none;
+  }
+}
+
+    
     #cardOverlay .card-title { font-size: 1.2rem; }
-    #cardOverlay .card-desc {
-      display: block; font-size: 1rem; margin-top: 0.5rem;
-    }
+    #cardOverlay .card-desc { display: block; font-size: 1rem; margin-top: 0.5rem; }
     #cardOverlay img { display: block; margin: 0 auto; }
-    /* Victory Overlay */
-    #victoryOverlay {
-      display: none; position: fixed; top: 0; left: 0;
+    #victoryOverlay { display: none; position: fixed; top: 0; left: 0;
       width: 100vw; height: 100vh; background: rgba(0,0,0,0.8);
       z-index: 9500; align-items: center; justify-content: center;
     }
     .fadeIn { animation: overlayFadeIn 0.8s forwards; }
     @keyframes overlayFadeIn { from { opacity: 0; } to { opacity: 1; } }
-    #winAnimation {
-      font-size: 2.5rem; font-weight: bold; color: var(--highlight);
+    #winAnimation { font-size: 2.5rem; font-weight: bold; color: var(--highlight);
       opacity: 0; animation: fadeInText 1s forwards;
     }
     @keyframes fadeInText { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-    /* End Game Modal */
     #endScreen {
       display: none; position: fixed; top: 0; left: 0;
       width: 100vw; height: 100vh; background: rgba(0,0,0,0.65);
       z-index: 9999; justify-content: center; align-items: center;
       backdrop-filter: blur(3px);
     }
-    #endScreenInner {
-      background: #1a1a1a; border-radius: 0.75rem;
+    #endScreenInner { background: #1a1a1a; border-radius: 0.75rem;
       padding: 1.5rem; width: 300px; text-align: center;
       box-shadow: 0 4px 12px rgba(0,0,0,0.5);
       animation: fadeInModal 0.4s ease-out;
     }
-    @keyframes fadeInModal { from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); } }
-    #shareBlock {
-      background: #0e0e0e; border: 1px solid #444; padding: 0.75rem;
-      margin: 1rem 0; border-radius: 0.5rem; font-size: 0.9rem;
-      color: var(--text); white-space: pre-wrap;
+    @keyframes fadeInModal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    #shareBlock { background: #0e0e0e; border: 1px solid #444;
+      padding: 0.75rem; margin: 1rem 0; border-radius: 0.5rem;
+      font-size: 0.9rem; color: var(--text); white-space: pre-wrap;
       text-align: left; width: 100%; max-width: 280px;
     }
-    #copyBtn {
-      background: var(--highlight); border: none;
+    #copyBtn { background: var(--highlight); border: none;
       padding: 0.5rem 1rem; border-radius: 0.5rem;
       font-weight: bold; cursor: pointer;
     }
-    /* Stylized Submit Button */
-    .submit-btn {
-      background: linear-gradient(45deg, #5eead4, #34d399);
+    .submit-btn { background: linear-gradient(45deg, #5eead4, #34d399);
       color: white; padding: 0.75rem 1.5rem;
       border: none; border-radius: 8px;
       font-size: 1.2rem; font-weight: bold;
       cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.15);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .submit-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+    .submit-btn:hover { transform: scale(1.05); box-shadow: 0 6px 12px rgba(0,0,0,0.25); }
+  
+    #resultLog {
+      display: none;
+      max-width: 300px; width: 100%;
     }
-  </style>
+    @media (min-width: 768px) {
+      #resultLog {
+        display: block;
+        position: absolute;
+        right: 2rem;
+        top: 10rem;
+      }
+    }
+    @media (max-width: 767px) {
+      #resultLog {
+        display: none;
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+        background: #1a1a1a;
+        border: 1px solid #444;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        z-index: 9999;
+        max-height: 50vh;
+        overflow-y: auto;
+        width: 90vw;
+      }
+      #logToggleBtn {
+  display: none;
+        display: block;
+        position: fixed;
+        bottom: 1rem;
+        left: 1rem;
+        background: var(--highlight);
+        color: black;
+        font-weight: bold;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        z-index: 10000;
+        cursor: pointer;
+      }
+    }
+    
+
+@media (max-width: 600px) {
+  .hand {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    width: 100%;
+  }
+
+  .card {
+    width: 58px;
+    height: 92px;
+    font-size: 0.7rem;
+  }
+
+  .card img {
+    width: 22px;
+    height: 22px;
+  }
+
+  .card-title {
+    font-size: 0.65rem;
+  }
+
+  .card-desc {
+    display: none;
+  }
+}
+
+
+  .card {
+    width: 64px;
+    height: 100px;
+    font-size: 0.75rem;
+  }
+
+  .card img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .card-title {
+    font-size: 0.7rem;
+  }
+
+  .card-desc {
+    display: none;
+  }
+
+
+
+@media (max-width: 600px) {
+  .hand {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    width: 100%;
+  }
+
+  .card {
+    width: 58px;
+    height: 92px;
+    font-size: 0.7rem;
+  }
+
+  .card img {
+    width: 22px;
+    height: 22px;
+  }
+
+  .card-title {
+    font-size: 0.65rem;
+  }
+
+  .card-desc {
+    display: none;
+  }
+}
+
+
+  .enemy img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .enemy h2 {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .hp-label {
+    font-size: 0.75rem;
+  }
+
+
+
+@media (max-width: 600px) {
+  .hand {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    width: 100%;
+  }
+
+  .card {
+    width: 58px;
+    height: 92px;
+    font-size: 0.7rem;
+  }
+
+  .card img {
+    width: 22px;
+    height: 22px;
+  }
+
+  .card-title {
+    font-size: 0.65rem;
+  }
+
+  .card-desc {
+    display: none;
+  }
+}
+
+
+  .hand {
+    width: 100%;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+  }
+
+
+
+@media (max-width: 600px) {
+  .enemy {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+  }
+
+  .enemy-details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .enemy-hp {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+</style>
 </head>
 <body>
   <h1>Lethal – Daily Card Battler</h1>
-  
-  <!-- Enemy Section -->
   <div class="enemy">
-    <img id="enemyIcon" alt="Enemy Icon" src=""/>
-    <h2 id="enemyName" style="color: var(--highlight); margin: 0.5rem 0;"></h2>
-    <div style="margin: 1rem auto; max-width: 200px;">
+    <img id="enemyIcon" alt="Enemy Icon" src="" />
+    <div class="enemy-details"><h2 id="enemyName">
+    <div id="failureMsg" style="display:none; font-size:0.9rem; color:#f87171; margin-top:0.25rem;"></div style="color: var(--highlight); margin: 0.5rem 0;"></h2>
+    <div style="margin:1rem auto; max-width:200px;">
       <div class="hp-label" id="enemyHPLabel"></div>
-      <div style="background: #222; border-radius: 8px; height: 20px; overflow: hidden;">
+      <div style="background:#222; border-radius:8px; height:20px; overflow:hidden;">
         <div class="hp-fill" id="enemyHPFill"></div>
       </div>
     </div>
   </div>
-  
-  <!-- Play Order -->
-  <div style="color: var(--highlight); font-weight: bold; margin-bottom: 0.5rem;">Play Order</div>
+  <div style="color: var(--highlight); font-weight:bold; margin-bottom:0.5rem;">Play Order</div>
   <div class="play-area" id="playArea">
-    <div class="drop-preview" id="previewMarker" style="display: none;"></div>
+    <div class="drop-preview" id="previewMarker" style="display:none;"></div>
   </div>
-  
-  <!-- Submit Button -->
-  <div class="submit-area">
-    <button class="submit-btn">Submit</button>
-  </div>
-  
-  <!-- Hand (Cards) - Populated from data.json -->
+  <div class="submit-area"><button class="submit-btn">Submit</button></div>
   <div class="hand" id="hand"></div>
-  
-  <!-- Hidden Result Log -->
-  <div id="resultLog" style="display: none;"></div>
-  
-  <!-- Victory Overlay -->
-  <div id="victoryOverlay">
-    <div id="winAnimation">Victory</div>
-  </div>
-  
-  <!-- End Game Modal -->
-  <div id="endScreen">
-    <div id="endScreenInner">
+  <div id="resultLog" style="display:none;"></div>
+  <div id="victoryOverlay"><div id="winAnimation">Victory</div></div>
+  <div id="endScreen"><div id="endScreenInner">
       <h2>🎉 You Defeated the Goblin King!</h2>
       <div id="shareBlock">⬜⬜⬜</div>
       <button id="copyBtn">Copy</button>
-    </div>
-  </div>
-  
-  <!-- Card Overlay for Expanded View (initially hidden) -->
-  <div id="cardOverlay" style="display: none;"></div>
-  
+  </div></div>
+  <div id="cardOverlay"></div>
   <script>
-    // Promote config to global scope for later use.
     let config = null;
-  
-    /******** LOAD CONFIG FROM data.json ********/
-    fetch('data.json')
-      .then(response => response.json())
+    fetch(`data.json?t=${Date.now()}`)
+      .then(r => r.json())
       .then(cfg => {
         config = cfg;
-        window.config = config; // Make config globally available
-        // Build a mapping for card damage lookup
+        window.config = cfg;
         window.cardDamageMapping = {};
-        config.playerCards.forEach(card => {
-          window.cardDamageMapping[card.name.toLowerCase()] = card.damage;
-        });
-  
-        /******** SETUP ENEMY ********/
-        function setupEnemy() {
-          document.getElementById("enemyIcon").src = config.enemy.icon;
-          document.getElementById("enemyName").textContent = config.enemy.name;
-          document.getElementById("enemyHPLabel").textContent =
-            `HP: ${config.enemy.hp} / ${config.enemy.hp}`;
-          document.getElementById("enemyHPFill").style.width = "100%";
-        }
-  
-        /******** GENERATE PLAYER CARDS ********/
-        function generatePlayerCards() {
-          const handContainer = document.getElementById("hand");
-          handContainer.innerHTML = "";
-          config.playerCards.forEach(card => {
-            const cardDiv = document.createElement("div");
-            cardDiv.className = "card";
-            cardDiv.innerHTML = `
-              <img src="${card.icon}" alt="${card.name} Icon" />
-              <div class="card-title">${card.name}</div>
-              <div class="card-desc">${card.description}</div>
-            `;
-            handContainer.appendChild(cardDiv);
-          });
-        }
-  
+        cfg.playerCards.forEach(c => window.cardDamageMapping[c.name.toLowerCase()] = c.damage);
         setupEnemy();
         generatePlayerCards();
-  
-        // Use pointer events if supported; otherwise, fall back to touch or mouse.
-        if (window.PointerEvent) {
-          document.querySelectorAll(".card").forEach(card => {
-            initCardEvents(card);
-          });
-        } else if ("ontouchstart" in window) {
-          document.querySelectorAll(".card").forEach(card => {
-            card.addEventListener("touchstart", handleTouchStart, {passive: false});
-          });
-        } else {
-          document.querySelectorAll(".card").forEach(card => {
-            card.addEventListener("mousedown", mouseDownHandler);
-            card.addEventListener("click", mouseClickHandler);
-            initDesktopOverlay(card);
-          });
-        }
+        bindInitialCardEvents();
       })
-      .catch(error => { console.error("Error loading data.json:", error); });
-  
-    // Helper to reinitialize card events after a turn
-    function rebindCardEvents() {
-      document.querySelectorAll("#hand .card").forEach(card => {
-        initCardEvents(card);
+      .catch(e => console.error('Error loading data.json:', e));
+
+    function setupEnemy() {
+      const e = config.enemy;
+      document.getElementById('enemyIcon').src = e.icon;
+      document.getElementById('enemyName').textContent = e.name;
+      document.getElementById('enemyHPLabel').textContent = `HP: ${e.hp} / ${e.hp}`;
+      document.getElementById('enemyHPFill').style.width = '100%';
+    }
+
+    function generatePlayerCards() {
+      const hand = document.getElementById('hand');
+      hand.innerHTML = '';
+      config.playerCards.forEach(card => {
+        const d = document.createElement('div');
+        d.className = 'card';
+        d.innerHTML = `
+          <img src="${card.icon}" alt="${card.name} Icon" />
+          <div class="card-title">${card.name}</div>
+          <div class="card-desc">${card.description}</div>`;
+        hand.appendChild(d);
       });
     }
-  
-    /******** POINTER EVENT HANDLERS (Unified) ********/
-    let draggedCard = null;
-    let pointerStartX = 0, pointerStartY = 0;
-    let dragOffsetX = 0, dragOffsetY = 0;
-    let isDragging = false;
-    let dragOrigin = null;
-  
-    function handlePointerDown(e) {
-      e.preventDefault();
-      hideCardOverlay();
-      draggedCard = e.currentTarget;
-      dragOrigin = draggedCard.parentNode.id;
-      pointerStartX = e.clientX;
-      pointerStartY = e.clientY;
-      const rect = draggedCard.getBoundingClientRect();
-      dragOffsetX = e.clientX - rect.left;
-      dragOffsetY = e.clientY - rect.top;
-      isDragging = false;
-      // Attach pointer events
-      draggedCard.setPointerCapture(e.pointerId);
-      draggedCard.addEventListener("pointermove", handlePointerMove);
-      draggedCard.addEventListener("pointerup", handlePointerUp);
-    }
-  
-    function handlePointerMove(e) {
-      const dx = e.clientX - pointerStartX;
-      const dy = e.clientY - pointerStartY;
-      if (!isDragging && Math.sqrt(dx*dx + dy*dy) > 10) { isDragging = true; }
-      if (isDragging) {
-        draggedCard.style.position = "absolute";
-        draggedCard.style.zIndex = "1000";
-        draggedCard.style.left = (e.clientX - dragOffsetX) + "px";
-        draggedCard.style.top = (e.clientY - dragOffsetY) + "px";
-      }
-    }
-  
-    function handlePointerUp(e) {
-      draggedCard.removeEventListener("pointermove", handlePointerMove);
-      draggedCard.removeEventListener("pointerup", handlePointerUp);
-      const dx = e.clientX - pointerStartX;
-      const dy = e.clientY - pointerStartY;
-      if (!isDragging && window.innerWidth < 600 && Math.sqrt(dx*dx+dy*dy) < 10) {
-        // Treat as a tap on mobile: show overlay.
-        showCardOverlay(draggedCard);
+
+    function bindInitialCardEvents() {
+      const cards = document.querySelectorAll('.card');
+      if (window.PointerEvent) {
+        cards.forEach(initCardEvents);
+      } else if ('ontouchstart' in window) {
+        cards.forEach(c => c.addEventListener('touchstart', handleTouchStart, {passive:false}));
       } else {
-        repositionCard(e.clientX, e.clientY);
+        cards.forEach(c => {
+          c.addEventListener('mousedown', mouseDownHandler);
+          c.addEventListener('click', mouseClickHandler);
+          initDesktopOverlay(c);
+        });
       }
-      if (draggedCard) {
-        draggedCard.style.position = "";
-        draggedCard.style.zIndex = "";
-        draggedCard.style.left = "";
-        draggedCard.style.top = "";
-        draggedCard.style.pointerEvents = "";
-        draggedCard.releasePointerCapture(e.pointerId);
-        initCardEvents(draggedCard);
-      }
-      draggedCard = null;
     }
-  
-    function repositionCard(clientX, clientY) {
-      const playArea = document.getElementById("playArea");
-      const hand = document.getElementById("hand");
-      const playRect = playArea.getBoundingClientRect();
-      const handRect = hand.getBoundingClientRect();
-      let parentToPlace;
-      if (clientX > playRect.left && clientX < playRect.right &&
-          clientY > playRect.top && clientY < playRect.bottom) {
-        parentToPlace = playArea;
-      } else if (clientX > handRect.left && clientX < handRect.right &&
-                 clientY > handRect.top && clientY < handRect.bottom) {
-        parentToPlace = hand;
-      } else {
-        parentToPlace = (dragOrigin === "hand") ? hand : playArea;
-      }
-      parentToPlace.appendChild(draggedCard);
-    }
-  
+
+    // Pointer Events
+    let draggedCard=null, dragOrigin=null, isDragging=false;
+    let startX=0, startY=0, offsetX=0, offsetY=0;
+
     function initCardEvents(card) {
-      // Remove any existing pointerdown handler and then add a new one.
-      card.removeEventListener("pointerdown", handlePointerDown);
-      card.addEventListener("pointerdown", handlePointerDown);
-      // Desktop preview events: if there is no touch device, use pointerenter/leave.
+      card.removeEventListener('pointerdown', handlePointerDown);
+      card.addEventListener('pointerdown', handlePointerDown);
       if (navigator.maxTouchPoints === 0) {
-        card.addEventListener("pointerenter", () => { if(!draggedCard) showCardOverlay(card); });
-        card.addEventListener("pointerleave", hideCardOverlay);
-        card.addEventListener("click", function(e) {
+        card.addEventListener('pointerenter', () => { if (!draggedCard) showCardOverlay(card); });
+        card.addEventListener('pointerleave', hideCardOverlay);
+        card.addEventListener('click', e => {
           if (!draggedCard) {
-            if (document.getElementById("cardOverlay").style.display === "block") {
-              hideCardOverlay();
-            } else {
-              showCardOverlay(card);
-            }
+            const ol = document.getElementById('cardOverlay');
+            ol.style.display = ol.style.display === 'block' ? 'none' : 'block';
           }
         });
       }
     }
-  
-    /******** FALLBACK MOUSE HANDLERS ********/
-    function mouseDownHandler(e) {
-      e.preventDefault();
-      hideCardOverlay();
+
+    function handlePointerDown(e) {
+      e.preventDefault(); hideCardOverlay();
       draggedCard = e.currentTarget;
       dragOrigin = draggedCard.parentNode.id;
+      startX = e.clientX; startY = e.clientY;
       const rect = draggedCard.getBoundingClientRect();
-      dragOffsetX = e.clientX - rect.left;
-      dragOffsetY = e.clientY - rect.top;
-      draggedCard.style.position = "absolute";
-      draggedCard.style.zIndex = "1000";
-      draggedCard.style.pointerEvents = "none";
-      draggedCard.style.left = rect.left + "px";
-      draggedCard.style.top = rect.top + "px";
-      document.addEventListener("mousemove", mouseMoveHandler);
-      document.addEventListener("mouseup", mouseUpHandler);
+      offsetX = startX - rect.left;
+      offsetY = startY - rect.top;
+      isDragging = false;
+      draggedCard.setPointerCapture(e.pointerId);
+      draggedCard.addEventListener('pointermove', handlePointerMove);
+      draggedCard.addEventListener('pointerup', handlePointerUp);
     }
-  
-    function mouseMoveHandler(e) {
-      if (!draggedCard) return;
-      hideCardOverlay();
-      draggedCard.style.left = (e.clientX - dragOffsetX) + "px";
-      draggedCard.style.top = (e.clientY - dragOffsetY) + "px";
+
+    function handlePointerMove(e) {
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (!isDragging && Math.hypot(dx, dy) > 10) isDragging = true;
+      if (isDragging) {
+        Object.assign(draggedCard.style, {
+          position: 'absolute',
+          zIndex: 1000,
+          left: `${e.clientX - offsetX}px`,
+          top: `${e.clientY - offsetY}px`
+        });
+      }
     }
-  
-    function mouseUpHandler(e) {
-      if (!draggedCard) return;
-      const playArea = document.getElementById("playArea");
-      const hand = document.getElementById("hand");
-      const playRect = playArea.getBoundingClientRect();
-      const handRect = hand.getBoundingClientRect();
-      let parentToPlace;
-      if (e.clientX > playRect.left && e.clientX < playRect.right &&
-          e.clientY > playRect.top && e.clientY < playRect.bottom)
-        parentToPlace = playArea;
-      else if (e.clientX > handRect.left && e.clientX < handRect.right &&
-               e.clientY > handRect.top && e.clientY < handRect.bottom)
-        parentToPlace = hand;
-      else
-        parentToPlace = (dragOrigin === "hand") ? hand : playArea;
-      draggedCard.style.position = "";
-      draggedCard.style.zIndex = "";
-      draggedCard.style.left = "";
-      draggedCard.style.top = "";
-      draggedCard.style.pointerEvents = "";
-      parentToPlace.appendChild(draggedCard);
-      document.removeEventListener("mousemove", mouseMoveHandler);
-      document.removeEventListener("mouseup", mouseUpHandler);
+
+    function handlePointerUp(e) {
+      draggedCard.removeEventListener('pointermove', handlePointerMove);
+      draggedCard.removeEventListener('pointerup', handlePointerUp);
+      if (!isDragging && window.innerWidth < 600 && Math.hypot(e.clientX-startX, e.clientY-startY) < 10) {
+        showCardOverlay(draggedCard);
+      } else {
+        repositionCard(e.clientX, e.clientY);
+      }
+      Object.assign(draggedCard.style, {position:'',zIndex:'',left:'',top:'',pointerEvents:''});
+      draggedCard.releasePointerCapture(e.pointerId);
       initCardEvents(draggedCard);
       draggedCard = null;
     }
-  
+
+    function repositionCard(x, y) {
+      const play = document.getElementById('playArea');
+      const hand = document.getElementById('hand');
+      const pr = play.getBoundingClientRect();
+      const hr = hand.getBoundingClientRect();
+      let parent;
+      if (x > pr.left && x < pr.right && y > pr.top && y < pr.bottom) parent = play;
+      else if (x > hr.left && x < hr.right && y > hr.top && y < hr.bottom) parent = hand;
+      else parent = (dragOrigin === 'hand' ? hand : play);
+      parent.appendChild(draggedCard);
+    }
+
+    // Mouse fallback
+    function mouseDownHandler(e) {
+      e.preventDefault(); hideCardOverlay();
+      draggedCard = e.currentTarget; dragOrigin = draggedCard.parentNode.id;
+      const rect = draggedCard.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+      Object.assign(draggedCard.style, {position:'absolute',zIndex:1000,pointerEvents:'none',left:`${rect.left}px`,top:`${rect.top}px`});
+      document.addEventListener('mousemove', mouseMoveHandler);
+      document.addEventListener('mouseup', mouseUpHandler);
+    }
+
+    function mouseMoveHandler(e) {
+      if (!draggedCard) return;
+      hideCardOverlay();
+      draggedCard.style.left = `${e.clientX - offsetX}px`;
+      draggedCard.style.top = `${e.clientY - offsetY}px`;
+    }
+
+    function mouseUpHandler(e) {
+      if (!draggedCard) return;
+      repositionCard(e.clientX, e.clientY);
+      Object.assign(draggedCard.style, {position:'',zIndex:'',left:'',top:'',pointerEvents:''});
+      initCardEvents(draggedCard);
+      draggedCard = null;
+      document.removeEventListener('mousemove', mouseMoveHandler);
+      document.removeEventListener('mouseup', mouseUpHandler);
+    }
+
     function mouseClickHandler(e) {
       if (!draggedCard) {
-        if (document.getElementById("cardOverlay").style.display === "block")
-          hideCardOverlay();
-        else
-          showCardOverlay(e.currentTarget);
+        const ol = document.getElementById('cardOverlay');
+        ol.style.display = ol.style.display === 'block' ? 'none' : 'block';
       }
     }
-  
+
     function initDesktopOverlay(card) {
-      card.addEventListener("pointerenter", function() { if (!draggedCard) showCardOverlay(card); });
-      card.addEventListener("pointerleave", hideCardOverlay);
+      card.addEventListener('pointerenter', () => { if (!draggedCard) showCardOverlay(card); });
+      card.addEventListener('pointerleave', hideCardOverlay);
     }
-  
-    /******** FALLBACK TOUCH HANDLERS (if PointerEvent unsupported) ********/
-    let touchStartX = 0, touchStartY = 0;
+
+    // Touch fallback
+    let touchStartX=0, touchStartY=0;
     function handleTouchStart(e) {
-      e.preventDefault();
-      hideCardOverlay();
-      draggedCard = e.currentTarget;
-      dragOrigin = draggedCard.parentNode.id;
+      e.preventDefault(); hideCardOverlay();
+      draggedCard = e.currentTarget; dragOrigin = draggedCard.parentNode.id;
       const rect = draggedCard.getBoundingClientRect();
-      const touch = e.touches[0];
-      dragOffsetX = touch.clientX - rect.left;
-      dragOffsetY = touch.clientY - rect.top;
-      touchStartX = touch.clientX;
-      touchStartY = touch.clientY;
-      draggedCard.style.position = "absolute";
-      draggedCard.style.zIndex = "1000";
-      draggedCard.style.pointerEvents = "none";
-      draggedCard.style.left = rect.left + "px";
-      draggedCard.style.top = rect.top + "px";
-      draggedCard.isDragging = false;
-      draggedCard.addEventListener("touchmove", handleTouchMove, {passive: false});
-      draggedCard.addEventListener("touchend", handleTouchEnd, {passive: false});
+      const t = e.touches[0];
+      offsetX = t.clientX - rect.left;
+      offsetY = t.clientY - rect.top;
+      draggedCard.style.position='absolute';
+      draggedCard.style.zIndex=1000;
+      draggedCard.style.pointerEvents='none';
+      draggedCard.style.left=`${rect.left}px`;
+      draggedCard.style.top=`${rect.top}px`;
+      draggedCard.isDragging=false;
+      touchStartX = t.clientX;
+      touchStartY = t.clientY;
+      draggedCard.addEventListener('touchmove', handleTouchMove, {passive:false});
+      draggedCard.addEventListener('touchend', handleTouchEnd, {passive:false});
     }
+
     function handleTouchMove(e) {
-      const touch = e.touches[0];
+      const t = e.touches[0];
       if (!draggedCard) return;
-      const dx = touch.clientX - touchStartX;
-      const dy = touch.clientY - touchStartY;
-      if (Math.sqrt(dx*dx + dy*dy) > 10) { draggedCard.isDragging = true; }
-      draggedCard.style.left = (touch.clientX - dragOffsetX) + "px";
-      draggedCard.style.top = (touch.clientY - dragOffsetY) + "px";
+      const dx = t.clientX - touchStartX;
+      const dy = t.clientY - touchStartY;
+      if (Math.hypot(dx,dy) > 10) draggedCard.isDragging=true;
+      draggedCard.style.left = `${t.clientX - offsetX}px`;
+      draggedCard.style.top = `${t.clientY - offsetY}px`;
       e.preventDefault();
     }
+
     function handleTouchEnd(e) {
-      const touch = e.changedTouches[0];
-      const dx = Math.abs(touch.clientX - touchStartX);
-      const dy = Math.abs(touch.clientY - touchStartY);
-      const distance = Math.sqrt(dx*dx + dy*dy);
-      draggedCard.removeEventListener("touchmove", handleTouchMove);
-      draggedCard.removeEventListener("touchend", handleTouchEnd);
-      if (distance < 10 && !draggedCard.isDragging) {
-        showCardOverlay(draggedCard);
-      } else {
-        const playArea = document.getElementById("playArea");
-        const hand = document.getElementById("hand");
-        const playRect = playArea.getBoundingClientRect();
-        const handRect = hand.getBoundingClientRect();
-        let parentToPlace;
-        if (touch.clientX > playRect.left && touch.clientX < playRect.right &&
-            touch.clientY > playRect.top && touch.clientY < playRect.bottom)
-          parentToPlace = playArea;
-        else if (touch.clientX > handRect.left && touch.clientX < handRect.right &&
-                 touch.clientY > handRect.top && touch.clientY < handRect.bottom)
-          parentToPlace = hand;
-        else
-          parentToPlace = (dragOrigin === "hand") ? hand : playArea;
-        parentToPlace.appendChild(draggedCard);
-      }
-      if (draggedCard) {
-        draggedCard.style.position = "";
-        draggedCard.style.zIndex = "";
-        draggedCard.style.left = "";
-        draggedCard.style.top = "";
-        draggedCard.style.pointerEvents = "";
-        initCardEvents(draggedCard);
-      }
+      const t = e.changedTouches[0];
+      const dist = Math.hypot(t.clientX - touchStartX, t.clientY - touchStartY);
+      draggedCard.removeEventListener('touchmove', handleTouchMove);
+      draggedCard.removeEventListener('touchend', handleTouchEnd);
+      if (dist < 10 && !draggedCard.isDragging) showCardOverlay(draggedCard);
+      else repositionCard(t.clientX, t.clientY);
+      Object.assign(draggedCard.style, {position:'',zIndex:'',left:'',top:'',pointerEvents:''});
+      initCardEvents(draggedCard);
       draggedCard = null;
     }
-    if (!window.PointerEvent && "ontouchstart" in window) {
-      document.querySelectorAll(".card").forEach(card => {
-        card.addEventListener("touchstart", handleTouchStart, {passive: false});
-      });
+
+    if (!window.PointerEvent && 'ontouchstart' in window) {
+      document.querySelectorAll('.card').forEach(c => c.addEventListener('touchstart', handleTouchStart, {passive:false}));
     }
-  
-    /******** SUBMIT TURN LOGIC ********/
+
+    // Turn submission logic
     let lastPlayedTurn = [];
-    document.querySelector(".submit-btn").addEventListener("click", () => {
-      const playArea = document.getElementById("playArea");
-      const cardTitles = Array.from(playArea.querySelectorAll(".card-title"));
-      const hpFill = document.querySelector(".hp-fill");
-      const hpLabel = document.querySelector(".hp-label");
-      let currentHP = parseInt(hpLabel.textContent.split("/")[0].replace("HP:", "").trim());
-      const getDamage = name => window.cardDamageMapping[name] || 0;
-      const cardNames = cardTitles.map(title => title.textContent.trim().toLowerCase());
-      addTurnResult(cardNames);
-      lastPlayedTurn = [...cardNames];
-      let i = 0;
-      function playCardSequentially() {
-        const allCards = document.querySelectorAll("#playArea .card");
-        allCards.forEach(c => c.classList.remove("active"));
-        if (i >= cardNames.length || currentHP <= 0) {
-          if (currentHP <= 0) showWinMessage();
-          else showFailedAttempt();
-          return;
+    document.querySelector('.submit-btn').addEventListener('click', () => {
+      const playArea = document.getElementById('playArea');
+      const hpLabel = document.querySelector('.hp-label');
+      const hpFill = document.querySelector('.hp-fill');
+      let currentHP = parseInt(hpLabel.textContent.split('/')[0].replace('HP:','').trim(), 10);
+      const names = Array.from(playArea.querySelectorAll('.card-title')).map(el => el.textContent.trim().toLowerCase());
+      lastPlayedTurn = [...names];
+      addTurnResult(names);
+      let i=0;
+      function playSeq() {
+        const all = playArea.querySelectorAll('.card');
+        all.forEach(c => c.classList.remove('active')); 
+        if (i>=names.length || currentHP<=0) {
+          return currentHP<=0 ? showWinMessage() : showFailedAttempt();
         }
-        const currentCard = allCards[i];
-        if (currentCard) { currentCard.classList.add("active"); }
-        const damage = getDamage(cardNames[i]);
-        currentHP = Math.max(0, currentHP - damage);
-        const percent = (currentHP / window.config.enemy.hp) * 100;
-        hpFill.style.width = percent + "%";
-        hpLabel.textContent = `HP: ${currentHP} / ${window.config.enemy.hp}`;
-        hpFill.style.background = "#f87171";
+        const c = all[i]; if(c) c.classList.add('active');
+        const dmg = window.cardDamageMapping[names[i]]||0;
+        currentHP = Math.max(0, currentHP - dmg);
+        const pct = (currentHP / config.enemy.hp) * 100;
+        hpFill.style.width = pct+'%';
+        hpLabel.textContent = `HP: ${currentHP} / ${config.enemy.hp}`;
+        hpFill.style.background='#f87171';
         setTimeout(() => {
-          if (currentCard) { currentCard.classList.remove("active"); }
-          hpFill.style.background = "#ef4444";
+          if(c) c.classList.remove('active');
+          hpFill.style.background='#ef4444';
           i++;
-          setTimeout(playCardSequentially, 500);
+          setTimeout(playSeq, 500);
         }, 250);
       }
-      playCardSequentially();
+      playSeq();
     });
-  
-    /******** END GAME MODAL LOGIC ********/
+
     function showWinMessage() {
-      const enemy = document.querySelector(".enemy");
-      enemy.style.animation = "enemyFall 1s ease forwards";
+      document.querySelector('.enemy').style.animation='enemyFall 1s ease forwards';
       setTimeout(() => {
-        const victoryOverlay = document.getElementById("victoryOverlay");
-        victoryOverlay.style.display = "flex";
-        victoryOverlay.classList.add("fadeIn");
+        const ov = document.getElementById('victoryOverlay');
+        ov.style.display='flex'; ov.classList.add('fadeIn');
         setTimeout(() => {
-          victoryOverlay.classList.remove("fadeIn");
-          victoryOverlay.style.display = "none";
-          const emojiRows = Array.from(document.querySelectorAll("#resultLog > div"))
-            .map(row => row.textContent)
-            .filter(txt => txt.includes("⚔️") || txt.includes("🔥") || txt.includes("🔨"))
-            .join("\n");
-          const shareBlock = document.getElementById("shareBlock");
-          const shareLines = lastPlayedTurn.map(name =>
-            `${getCardEmoji(name)} ${name.charAt(0).toUpperCase() + name.slice(1)}`
-          );
-          const header = "🃏 Lethal #001\n🏆 Defeated the Goblin King in " +
-            document.querySelectorAll("#resultLog > div").length + " turn(s)!\n\n";
-          const shareFormatted = header + shareLines.join("  ");
-          shareBlock.textContent = shareFormatted;
-          navigator.clipboard.writeText(shareFormatted);
-          const modal = document.getElementById("endScreen");
-          modal.style.display = "flex";
-          document.getElementById("copyBtn").onclick = () => {
-            navigator.clipboard.writeText(shareFormatted);
-            document.getElementById("copyBtn").textContent = "Copied!";
+          ov.classList.remove('fadeIn'); ov.style.display='none';
+          const shareLines = lastPlayedTurn.map(n => `${getCardEmoji(n)} ${n.charAt(0).toUpperCase()+n.slice(1)}`);
+          const header = `🃏 Lethal #001\n🏆 Defeated the Goblin King in ${document.getElementById('resultLog').childElementCount} turns!\n\n`;
+          const content = header + shareLines.join('  ');
+          document.getElementById('shareBlock').textContent = content;
+          navigator.clipboard.writeText(content);
+          const modal = document.getElementById('endScreen'); modal.style.display='flex';
+          document.getElementById('copyBtn').onclick = () => {
+            navigator.clipboard.writeText(content);
+            document.getElementById('copyBtn').textContent='Copied!';
           };
         }, 1500);
       }, 1000);
     }
-  
+
     function showFailedAttempt() {
-      const playArea = document.getElementById("playArea");
-      const guessRow = document.createElement("div");
-      guessRow.classList.add("guess-row");
-      guessRow.style.display = "flex";
-      guessRow.style.marginBottom = "1rem";
-      guessRow.style.justifyContent = "center";
-      guessRow.style.gap = "0.5rem";
-      lastPlayedTurn.forEach(name => {
-        const box = document.createElement("div");
-        box.textContent = getCardEmoji(name);
-        box.style.width = "48px";
-        box.style.height = "48px";
-        box.style.fontSize = "2rem";
-        box.style.display = "flex";
-        box.style.alignItems = "center";
-        box.style.justifyContent = "center";
-        box.style.background = "#1e1e1e";
-        box.style.border = "2px solid #333";
-        box.style.borderRadius = "0.5rem";
-        guessRow.appendChild(box);
+      const row = document.createElement('div');
+      Object.assign(row.style, {display:'flex',gap:'0.5rem',justifyContent:'center',marginBottom:'1rem'});
+      lastPlayedTurn.forEach(n => {
+        const b = document.createElement('div');
+        b.textContent = getCardEmoji(n);
+        Object.assign(b.style, {width:'48px',height:'48px',fontSize:'2rem',display:'flex',alignItems:'center',justifyContent:'center',background:'#1e1e1e',border:'2px solid #333',borderRadius:'0.5rem'});
+        row.appendChild(b);
       });
-      document.getElementById("resultLog").appendChild(guessRow);
-      const cards = Array.from(playArea.querySelectorAll(".card"));
-      cards.forEach(card => {
-        document.getElementById("hand").appendChild(card);
-        initCardEvents(card);
+      document.getElementById('resultLog').appendChild(row);
+      Array.from(document.querySelectorAll('#playArea .card')).forEach(c => {
+        document.getElementById('hand').appendChild(c);
+        initCardEvents(c);
       });
+      setupEnemy();
+      // document.getElementById('enemyHPLabel').textContent = `HP: ${config.enemy.hp} / ${config.enemy.hp}`;
     }
-  
-    function getCardEmoji(cardName) {
-      switch (cardName) {
-        case "strike": return "⚔️";
-        case "fireball": return "🔥";
-        case "bash": return "🔨";
-        default: return "❓";
+
+    function getCardEmoji(name) {
+      return {strike:'⚔️',fireball:'🔥',bash:'🔨'}[name]||'❓';
+    }
+
+    function addTurnResult(names) {
+      const log = document.getElementById('resultLog');
+      const r = document.createElement('div');
+      Object.assign(r.style,{fontSize:'1.5rem',margin:'0.5rem 0'});
+      r.textContent = names.map(n => `${getCardEmoji(n)} ${n.charAt(0).toUpperCase()+n.slice(1)}`).join('  ');
+      log.appendChild(r);
+    }
+
+    function showCardOverlay(card) {
+      const ov = document.getElementById('cardOverlay');
+      ov.innerHTML = `💭 <img src="${card.querySelector('img').src}" alt=""/><div class="card-title">${card.querySelector('.card-title').textContent}</div><div class="card-desc">${card.querySelector('.card-desc').textContent}</div>`;
+      if (window.innerWidth >= 600) {
+        const rect = card.getBoundingClientRect();
+        const ow = 200, oh = 300;
+        let left = rect.right + 10;
+        if (left + ow > window.innerWidth) left = rect.left - ow - 10;
+        let top = rect.top;
+        if (top + oh > window.innerHeight) top = window.innerHeight - oh - 10;
+        Object.assign(ov.style, {position:'absolute',left:`${left}px`,top:`${top}px`,display:'block'});
+      } else {
+        Object.assign(ov.style, {left:'0',top:'0',display:'flex'});
       }
     }
-  
-    function addTurnResult(cardNames) {
-      const log = document.getElementById("resultLog");
-      const row = document.createElement("div");
-      row.style.fontSize = "1.5rem";
-      row.style.margin = "0.5rem 0";
-      row.textContent = cardNames
-        .map(name => `${getCardEmoji(name)} ${name.charAt(0).toUpperCase() + name.slice(1)}`)
-        .join("  ");
-      log.appendChild(row);
-    }
-  
+
     function hideCardOverlay() {
-      document.getElementById("cardOverlay").style.display = "none";
+      document.getElementById('cardOverlay').style.display = 'none';
+    }
+  </script>
+
+  <div id="logToggleBtn" style="display: none;">📜</div>
+  <script>
+    const logBtn = document.getElementById('logToggleBtn');
+    const logPanel = document.getElementById('resultLog');
+    logBtn.addEventListener('click', () => {
+      logPanel.style.display = (logPanel.style.display === 'block') ? 'none' : 'block';
+    });
+    if (window.innerWidth < 768) {
+      logBtn.style.display = 'flex';
     }
   </script>
 </body>
